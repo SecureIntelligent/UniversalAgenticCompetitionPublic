@@ -106,6 +106,37 @@ For local validation, use the same environment image: [secureintelligent/acp:lat
 
 `secureintelligent/acp` runtime image (Python 3.12) with Harbor, agent SDKs, and common CLI/network tooling.
 
+Installed packages in acp:
+```
+requires-python = ">=3.12"
+dependencies = [
+    "aiohttp>=3.13.4",
+    "anthropic>=0.97.0",
+    "claude-agent-sdk>=0.1.72",
+    "cohere>=6.1.0",
+    "crewai>=1.6.1",
+    "google-genai>=1.74.0",
+    "groq>=1.2.0",
+    "harbor==0.16.1",
+    "httpx>=0.28.1",
+    "langchain>=1.2.17",
+    "langchain-anthropic>=1.4.3",
+    "langchain-community>=0.4.1",
+    "langchain-core>=1.3.2",
+    "langchain-openai>=1.1.10",
+    "langgraph>=1.1.10",
+    "litellm>=1.83.14",
+    "llama-index>=0.14.21",
+    "mistralai>=2.4.4",
+    "openai>=2.24.0",
+    "openai-agents>=0.10.5",
+    "pydantic-ai>=1.44.0",
+    "python-dotenv>=1.2.2",
+    "tenacity>=9.1.4",
+    "tiktoken>=0.12.0",
+]
+```
+
 ### Installed packages
 
 **System tools (APT, preinstalled)**
