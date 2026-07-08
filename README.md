@@ -6,6 +6,12 @@ The goal is to show the shape of the tasks and the shape of an agent submission.
 
 This repository is not the final benchmark. The tasks in `local_task/` are provided for local development and validation only. Official scoring will use a closed set of evaluation tasks.
 
+## Updates
+
+2026-07-08: Fixed local task fixtures and entrypoint startup for SQL injection and incident log tasks.
+
+2026-07-08: Fixed example local agent stream event handling for current `pydantic-ai` APIs, including async context-managed streams and tool result event shape changes; updated `sample_submission.zip` accordingly.
+
 ## Competition focus
 
 The main focus of this competition is cybersecurity-oriented agent tasks. We strongly recommend participants review the following materials for security context:

@@ -74,11 +74,11 @@ def _log_stream_event(event: Any) -> str | None:
         return None
 
     if isinstance(event, FunctionToolResultEvent):
-        result = event.result
+        result = getattr(event, "result", None) or getattr(event, "part", None)
         _log_event(
             "llm_tool_result",
             tool=getattr(result, "tool_name", None),
-            result=getattr(result, "content", event.content),
+            result=getattr(result, "content", getattr(event, "content", None)),
         )
         return None
 
@@ -269,6 +269,25 @@ def get_pydantic_agent() -> Agent[LocalAgentDeps, str]:
     return agent
 
 
+async def _consume_stream_events(stream: Any) -> str:
+    final_output = ""
+
+    async def consume(events: Any) -> None:
+        nonlocal final_output
+        async for event in events:
+            output = _log_stream_event(event)
+            if output is not None:
+                final_output = output
+
+    if hasattr(stream, "__aenter__"):
+        async with stream as events:
+            await consume(events)
+    else:
+        await consume(stream)
+
+    return final_output
+
+
 async def run_prompt(prompt: str) -> str:
     _configure_logging()
     workdir = _resolve_workdir()
@@ -280,16 +299,13 @@ async def run_prompt(prompt: str) -> str:
         prompt=prompt,
     )
     agent = get_pydantic_agent()
-    final_output = ""
-    async for event in agent.run_stream_events(
-        prompt,
-        deps=LocalAgentDeps(workdir=workdir),
-        usage_limits=UsageLimits(request_limit=REQUEST_LIMIT),
-    ):
-        output = _log_stream_event(event)
-        if output is not None:
-            final_output = output
-    return final_output
+    return await _consume_stream_events(
+        agent.run_stream_events(
+            prompt,
+            deps=LocalAgentDeps(workdir=workdir),
+            usage_limits=UsageLimits(request_limit=REQUEST_LIMIT),
+        )
+    )
 
 
 def main() -> None:
