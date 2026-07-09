@@ -8,6 +8,8 @@ This repository is not the final benchmark. The tasks in `local_task/` are provi
 
 ## Updates
 
+2026-07-09: Fixed `fix-sqli-search` and `fix-sqli-login` reference solutions to match current source files and wait for the local service before running regression tests.
+
 2026-07-08: Fixed local task fixtures and entrypoint startup for SQL injection and incident log tasks.
 
 2026-07-08: Fixed example local agent stream event handling for current `pydantic-ai` APIs, including async context-managed streams and tool result event shape changes; updated `sample_submission.zip` accordingly.

@@ -30,5 +30,15 @@ print("Patched /app/routers/auth.py")
 PYEOF
 
 cd /app
+for _ in $(seq 1 30); do
+    if python3 - <<'PYEOF'
+import urllib.request
+urllib.request.urlopen("http://127.0.0.1:8000/healthz", timeout=1).read()
+PYEOF
+    then
+        break
+    fi
+    sleep 1
+done
 pytest tests/ -q
 echo "All tests pass."

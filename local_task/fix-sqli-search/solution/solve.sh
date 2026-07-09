@@ -8,10 +8,8 @@ f = pathlib.Path("/app/routers/items.py")
 src = f.read_text()
 
 vulnerable = (
-    "        query = (\n"
-    "            f\"SELECT * FROM items \"\n"
-    "            f\"WHERE name LIKE '%{q}%' ORDER BY id ASC\"\n"
-    "        )\n"
+    "        # VULNERABLE: f-string LIKE concatenation\n"
+    "        query = f\"SELECT * FROM items WHERE name LIKE '%{q}%' ORDER BY id ASC\"\n"
     "        rows = await conn.fetch(query)"
 )
 fixed = (
@@ -29,5 +27,15 @@ print("Patched /app/routers/items.py")
 PYEOF
 
 cd /app
+for _ in $(seq 1 30); do
+    if python3 - <<'PYEOF'
+import urllib.request
+urllib.request.urlopen("http://127.0.0.1:8000/healthz", timeout=1).read()
+PYEOF
+    then
+        break
+    fi
+    sleep 1
+done
 pytest tests/ -q
 echo "All tests pass."
